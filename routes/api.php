@@ -1,0 +1,80 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\Api\MovieApiController;
+use App\Http\Controllers\Api\MovieSearchController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PermissionController;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| These routes are loaded by the RouteServiceProvider and assigned to the
+| "api" middleware group. Enjoy building your API!
+|
+*/
+
+
+
+Route::apiResource('/roles', RoleController::class);
+Route::apiResource('/permissions', PermissionController::class);
+// Authenticated User Info (Sanctum, optional)
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+// ==============================
+// Auth Routes (JWT)
+// ==============================
+Route::post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/register', [AuthController::class, 'store']);
+Route::get('/auth/user/{id}', [AuthController::class, 'show']);
+// Route::middleware('auth:api')->get('/me', [AuthController::class, 'me']);
+// Route::middleware('auth:api')->post('/logout', [AuthController::class, 'logout']);
+
+// ==============================
+// Social Login (Google & GitHub)
+// ==============================
+Route::prefix('auth')->group(function () {
+    Route::get('/google', [SocialAuthController::class, 'redirectToGoogle']);
+    Route::get('/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
+
+    Route::get('/github', [SocialAuthController::class, 'redirectToGitHub']);
+    Route::get('/github/callback', [SocialAuthController::class, 'handleGitHubCallback']);
+});
+
+// ==============================
+// Movie Routes
+// ==============================
+Route::get('/movies', [MovieApiController::class, 'index']);
+Route::get('/movies/by-id/{id}', [MovieApiController::class, 'showById']);
+Route::get('/movies/by-tmdb/{tmdb_id}', [MovieApiController::class, 'showByTmdb']);
+Route::get('/movies/{tmdb_id}/trailer', [MovieApiController::class, 'getTrailer']);
+Route::middleware(['auth:api'])->group(function () {
+    // Route::post('/movies', [MovieApiController::class, 'store']);
+    // Route::put('/movies/{id}', [MovieApiController::class, 'update']);
+    // Route::delete('/movies/{id}', [MovieApiController::class, 'destroy']);
+
+    Route::post('/favorites/toggle', [MovieApiController::class, 'toggleFavorite']);
+    Route::get('/movies/favorites', [MovieApiController::class, 'getFavorites']);
+});
+
+// ==============================
+// Search & Genre Routes
+// ==============================
+Route::get('/search', [MovieSearchController::class, 'search']);
+Route::get('/genres', fn() => \App\Models\Genre::select('id', 'name')->orderBy('name')->get());
+
+
+Route::middleware('auth:api')->group(function () {
+    Route::get('/me', [UserController::class, 'me']);
+    Route::get('/users', [UserController::class, 'index']);
+    Route::post('/users/{id}/role', [UserController::class, 'updateRole']);
+});
