@@ -41,6 +41,12 @@ class UserCrudController extends CrudController
             'attribute' => 'name',
             'model'     => Role::class,
         ]);
+        CRUD::column('is_verified')->type('boolean')->label('Verified');
+        CRUD::addColumn([
+            'name' => 'status',
+            'type' => 'boolean',
+            'label' => 'Active',
+        ]);
     }
 
 
@@ -63,6 +69,19 @@ class UserCrudController extends CrudController
             'attribute' => 'name',
             'pivot'     => true,
         ]);
+        CRUD::addField([
+            'name' => 'is_verified',
+            'type' => 'boolean',
+            'label' => 'Is Verified',
+            'default' => false,
+        ]);
+        CRUD::addField([
+            'name' => 'status',
+            'label' => 'Status',
+            'type' => 'select_from_array',
+            'options' => [1 => 'Active', 0 => 'Inactive'],
+            'allows_null' => false,
+        ]);
     }
     protected function setupUpdateOperation()
     {
@@ -81,6 +100,19 @@ class UserCrudController extends CrudController
             'model'     => Role::class,
             'attribute' => 'name',
             'pivot'     => true,
+        ]);
+        CRUD::addField([
+            'name' => 'is_verified',
+            'type' => 'boolean',
+            'label' => 'Is Verified',
+            'default' => false,
+        ]);
+        CRUD::addField([
+            'name' => 'status',
+            'label' => 'Status',
+            'type' => 'select_from_array',
+            'options' => [1 => 'Active', 0 => 'Inactive'],
+            'allows_null' => false,
         ]);
     }
 

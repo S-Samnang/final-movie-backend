@@ -36,6 +36,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/register', [AuthController::class, 'store']);
 Route::get('/auth/user/{id}', [AuthController::class, 'show']);
+Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp']);
+Route::post('/auth/resend-otp', [AuthController::class, 'resendOtp']);
 // Route::middleware('auth:api')->get('/me', [AuthController::class, 'me']);
 // Route::middleware('auth:api')->post('/logout', [AuthController::class, 'logout']);
 

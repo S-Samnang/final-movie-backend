@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Contracts\Mail\Mailer;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OtpVerificationMail;
+
 
 class AuthController extends Controller
 {
@@ -30,11 +34,19 @@ class AuthController extends Controller
             $user->roles()->attach(2); // or get role by name 'user'
         }
 
-        $token = JWTAuth::fromUser($user);
+        // Generate 6-digit OTP
+        $otp = rand(100000, 999999);
+
+        // Save OTP to user
+        $user->otp = $otp;
+        $user->otp_expires_at = now()->addMinutes(10);
+        $user->save();
+
+        // Send OTP email
+        Mail::to($user->email)->send(new \App\Mail\OtpVerificationMail($user));
 
         return response()->json([
-            'token' => $token,
-            'user' => $user
+            'message' => 'OTP sent to email. Please verify to activate your account.',
         ]);
     }
 
@@ -50,6 +62,9 @@ class AuthController extends Controller
         }
 
         $user = JWTAuth::user();
+        if (! $user->is_verified) {
+            return response()->json(['error' => 'Email not verified.'], 403);
+        }
         $user->load('roles'); // 💡 load roles and permissions
 
         return response()->json([
@@ -94,5 +109,53 @@ class AuthController extends Controller
                 'permissions' => $permissions,
             ]
         ]);
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required|digits:6',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user || $user->otp !== $request->otp || now()->gt($user->otp_expires_at)) {
+            return response()->json(['error' => 'Invalid or expired OTP'], 422);
+        }
+
+        $user->is_verified = true;
+        $user->otp = null;
+        $user->otp_expires_at = null;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Email verified successfully! Please log in.',
+        ]);
+    }
+
+    public function resendOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user) {
+            return response()->json(['error' => 'User not found.'], 404);
+        }
+
+        if ($user->is_verified) {
+            return response()->json(['error' => 'User is already verified.'], 400);
+        }
+
+        $user->otp = rand(100000, 999999);
+        $user->otp_expires_at = now()->addMinutes(10);
+        $user->save();
+
+        Mail::to($user->email)->send(new OtpVerificationMail($user));
+
+        return response()->json(['message' => 'New OTP sent to your email.']);
     }
 }
