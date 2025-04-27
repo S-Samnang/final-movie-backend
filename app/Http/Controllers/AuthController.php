@@ -21,7 +21,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6'
+            'password' => 'required|string|min:6|max:50',
         ]);
 
         $user = User::create([
@@ -57,6 +57,9 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
+        // Check if user exists
+        $user = User::where('email', $credentials['email'])->first();
+
         if (! $token = JWTAuth::attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
@@ -64,6 +67,11 @@ class AuthController extends Controller
         $user = JWTAuth::user();
         if (! $user->is_verified) {
             return response()->json(['error' => 'Email not verified.'], 403);
+        }
+
+        // Check if password is correct
+        if (! Hash::check($credentials['password'], $user->password)) {
+            return response()->json(['error' => 'Invalid credentials.'], 401);
         }
         $user->load('roles'); // 💡 load roles and permissions
 
@@ -74,6 +82,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'roles' => $user->roles->pluck('name'), // ✅ proper dynamic roles
+                'profile_image' => $user->profile_image ?? null,
 
             ]
         ]);

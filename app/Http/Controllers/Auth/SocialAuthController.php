@@ -29,6 +29,7 @@ class SocialAuthController extends Controller
             [
                 'name' => $googleUser->getName(),
                 'email' => $googleUser->getEmail(),
+                'profile_image' => $googleUser->getAvatar(),
                 'password' => bcrypt(str()->random(16)), // random fallback password
             ]
         );
@@ -44,6 +45,7 @@ class SocialAuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'profile_image' => $user->profile_image,
                 'roles' => $user->roles->pluck('name'),
             ],
             'token' => $token,
@@ -69,6 +71,7 @@ class SocialAuthController extends Controller
             [
                 'name' => $githubUser->getName() ?? $githubUser->getNickname(),
                 'email' => $githubUser->getEmail(),
+                'profile_image' => $githubUser->getAvatar(),
                 'password' => bcrypt(str()->random(16)),
             ]
         );
@@ -84,6 +87,7 @@ class SocialAuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'profile_image' => $user->profile_image,
                 'roles' => $user->roles->pluck('name'),
             ],
             'token' => $token,
