@@ -199,7 +199,7 @@ class MovieCrudController extends CrudController
             $movie->actors()->syncWithoutDetaching([$actor->id]);
         }
 
-        Alert::success('Actors synced successfully')->flash();
-        return back();
+        Alert::success("✅ Synced actors for '{$movie->title}' from TMDB!")->flash();
+        return redirect()->back();
     }
 }

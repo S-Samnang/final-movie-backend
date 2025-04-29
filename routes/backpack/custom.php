@@ -22,6 +22,10 @@ Route::group([
     Route::crud('permission', 'PermissionCrudController');
 
     Route::get('movie/sync-actors/{id}', [\App\Http\Controllers\Admin\MovieCrudController::class, 'syncActors']);
+    
+    Route::get('dashboard', function () {
+        return view('vendor.backpack.base.dashboard');
+    });
 }); // this should be the absolute last line of this file
 
 /**
