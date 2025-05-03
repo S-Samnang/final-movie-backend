@@ -59,4 +59,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return $query->where('status', 1);
     }
+    public function subscription()
+    {
+        return $this->hasOne(Subscription::class);
+    }
 }

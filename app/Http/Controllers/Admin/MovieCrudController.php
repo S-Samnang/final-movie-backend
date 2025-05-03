@@ -96,7 +96,7 @@ class MovieCrudController extends CrudController
         CRUD::setValidation(MovieRequest::class);
 
         CRUD::field('tmdb_id')->type('number')->label('TMDB ID');
-        CRUD::field('type')->type('text')->label('Type (upcoming, now_playing, top_rated)');
+        CRUD::field('type')->type('text')->label('Type (upcoming, now_playing, popular)');
         CRUD::field('title')->type('text')->label('Title');
         CRUD::field('original_title')->type('text')->label('Original Title');
         CRUD::field('overview')->type('textarea')->label('Overview');

@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('cast_id')->nullable();
             $table->string('credit_id')->nullable();
             $table->integer('order')->nullable();
+
             $table->timestamps();
         });
     }

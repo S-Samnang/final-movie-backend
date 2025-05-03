@@ -25,7 +25,7 @@ class Actor extends Model
     ];
     public function movies()
     {
-        return $this->belongsToMany(Movie::class, 'actor_movie');
+        return $this->belongsToMany(Movie::class, 'actor_movie', 'actor_id', 'movie_id');
     }
     public function scopeActive($query)
     {

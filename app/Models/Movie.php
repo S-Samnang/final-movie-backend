@@ -33,7 +33,7 @@ class Movie extends Model
     }
     public function actors()
     {
-        return $this->belongsToMany(Actor::class, 'actor_movie');
+        return $this->belongsToMany(Actor::class, 'actor_movie', 'movie_id', 'actor_id');
     }
     public function scopeActive($query)
     {

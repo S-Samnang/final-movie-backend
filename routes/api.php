@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -61,10 +62,11 @@ Route::get('/movies', [MovieApiController::class, 'index']);
 Route::get('/movies/by-id/{id}', [MovieApiController::class, 'showById']);
 Route::get('/movies/by-tmdb/{tmdb_id}', [MovieApiController::class, 'showByTmdb']);
 Route::get('/movies/{tmdb_id}/trailer', [MovieApiController::class, 'getTrailer']);
+Route::get('/actor/{id}', [ActorController::class, 'show']);
 Route::middleware(['auth:api'])->group(function () {
-    // Route::post('/movies', [MovieApiController::class, 'store']);
-    // Route::put('/movies/{id}', [MovieApiController::class, 'update']);
-    // Route::delete('/movies/{id}', [MovieApiController::class, 'destroy']);
+    Route::post('/movies', [MovieApiController::class, 'store']);
+    Route::put('/movies/{id}', [MovieApiController::class, 'update']);
+    Route::delete('/movies/{id}', [MovieApiController::class, 'destroy']);
 
     Route::post('/favorites/toggle', [MovieApiController::class, 'toggleFavorite']);
     Route::get('/movies/favorites', [MovieApiController::class, 'getFavorites']);
