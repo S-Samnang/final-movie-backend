@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\MovieSearchController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RatingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +64,7 @@ Route::get('/movies/by-id/{id}', [MovieApiController::class, 'showById']);
 Route::get('/movies/by-tmdb/{tmdb_id}', [MovieApiController::class, 'showByTmdb']);
 Route::get('/movies/{tmdb_id}/trailer', [MovieApiController::class, 'getTrailer']);
 Route::get('/actor/{id}', [ActorController::class, 'show']);
+Route::get('/ratings/{movieId}', [RatingController::class, 'index']);
 Route::middleware(['auth:api'])->group(function () {
     Route::post('/movies', [MovieApiController::class, 'store']);
     Route::put('/movies/{id}', [MovieApiController::class, 'update']);
@@ -70,6 +72,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::post('/favorites/toggle', [MovieApiController::class, 'toggleFavorite']);
     Route::get('/movies/favorites', [MovieApiController::class, 'getFavorites']);
+    Route::post('/ratings', [RatingController::class, 'store']);
 });
 
 // ==============================

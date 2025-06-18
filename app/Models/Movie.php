@@ -39,4 +39,18 @@ class Movie extends Model
     {
         return $query->where('status', 1);
     }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function averageRating()
+    {
+        return $this->ratings()->avg('rating');
+    }
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(User::class, 'user_favorite_movies');
+    }
 }

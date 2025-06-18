@@ -22,7 +22,19 @@ class Actor extends Model
         'credit_id',
         'order',
         'status',
+        'also_known_as',
+        'biography',
+        'birthday',
+        'deathday',
+        'homepage',
+        'place_of_birth',
+        'imdb_id',
     ];
+
+    protected $casts = [
+        'also_known_as' => 'array',
+    ];
+    
     public function movies()
     {
         return $this->belongsToMany(Movie::class, 'actor_movie', 'actor_id', 'movie_id');

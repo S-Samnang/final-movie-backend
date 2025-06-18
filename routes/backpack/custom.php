@@ -26,6 +26,8 @@ Route::group([
     Route::get('dashboard', function () {
         return view('vendor.backpack.base.dashboard');
     });
+    Route::crud('rating', 'RatingCrudController');
+    Route::crud('favorite', 'FavoriteCrudController');
 }); // this should be the absolute last line of this file
 
 /**

@@ -63,4 +63,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(Subscription::class);
     }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
 }

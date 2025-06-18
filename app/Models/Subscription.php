@@ -8,14 +8,17 @@ class Subscription extends Model
 {
     protected $fillable = [
         'user_id',
-        'is_active',
-        'start_date',
-        'end_date',
+        'plan_name',
+        'amount',
+        'currency',
+        'reference',
+        'status',
+        'paid_at',
     ];
 
     // Relationship
     public function user()
     {
         return $this->belongsTo(User::class);
-    }  
+    }
 }

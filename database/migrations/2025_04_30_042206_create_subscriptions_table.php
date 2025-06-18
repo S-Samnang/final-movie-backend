@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->boolean('is_active')->default(false);
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
+            $table->string('plan_name')->nullable(); // if you support plans
+            $table->decimal('amount', 10, 2);
+            $table->string('currency')->default('KHR');
+            $table->string('reference')->unique(); // Bakong txn ID
+            $table->enum('status', ['pending', 'paid', 'failed'])->default('pending');
+            $table->timestamp('paid_at')->nullable();
             $table->timestamps();
         });
     }
